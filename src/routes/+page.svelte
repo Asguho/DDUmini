@@ -3,7 +3,8 @@
 		cleanCommas,
 		getSentence,
 		getAmountOfMissingCommas,
-		getAmountOfWrongCommas
+		getAmountOfWrongCommas,
+		generateFeedbackHtml
 	} from '$lib/utils';
 	const originalSentence = getSentence();
 	let userInputSentence = $state(cleanCommas(originalSentence));
@@ -11,6 +12,8 @@
 		getAmountOfMissingCommas(originalSentence, userInputSentence)
 	);
 	let amountOfWrongCommas = $derived(getAmountOfWrongCommas(originalSentence, userInputSentence));
+
+	let feedbackHtml = $derived(generateFeedbackHtml(originalSentence, userInputSentence));
 
 	let checkSentence = $state(false);
 </script>
@@ -37,6 +40,8 @@
 			<p class={amountOfWrongCommas != 0 ? 'text-red-500' : 'text-teal-800'}>
 				Der er {amountOfWrongCommas} forkerte kommaer
 			</p>
+
+			{@html feedbackHtml}
 		{:else}
 			<!-- else content here -->
 			<button
