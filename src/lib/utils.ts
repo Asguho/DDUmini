@@ -50,12 +50,13 @@ export const generateFeedbackHtml = (groundTruth: string, userInput: string) => 
     const gtWord = wordGT[i];
     const uiWord = wordUI[i] || '';
 
-    if (gtWord[-1] === ',' && uiWord[-1] === ',') {
-      html += '<span style="background-color: #2dd4bf; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span>';
-    } else if (gtWord[-1] === ',' && uiWord[-1] !== ',') {
-      html += '<span style="background-color: #ef4444; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span>';
+
+    if (gtWord.includes(',') && uiWord.includes(',')) {
+      html += gtWord.replace(",","")+'<span style="background-color: #2dd4bf; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
+    } else if (gtWord.includes(',') && !uiWord.includes(',')) {
+      html += gtWord.replace(",","")+'<span style="background-color: #ef4444; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
     } else {
-      html += gtWord + " ";
+      html += gtWord + ' ';
     }
   }
 

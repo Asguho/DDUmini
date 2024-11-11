@@ -16,6 +16,7 @@
 	let feedbackHtml = $derived(generateFeedbackHtml(originalSentence, userInputSentence));
 
 	let checkSentence = $state(false);
+	let lastInput = userInputSentence;
 </script>
 
 <header class="absolute flex w-full flex-col items-center font-serif">
@@ -31,6 +32,11 @@
 		<textarea
 			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-teal-50"
 			bind:value={userInputSentence}
+			oninput={() => {
+				userInputSentence.replace(/,/g, '') == lastInput.replace(/,/g, '')
+					? (lastInput = userInputSentence)
+					: (userInputSentence = lastInput);
+			}}
 		></textarea>
 		{#if checkSentence}
 			<!-- content here -->
