@@ -3,4 +3,6 @@
 	let { children } = $props();
 </script>
 
-{@render children()}
+<div class="font-feather min-h-screen bg-[#1c2429] text-white">
+	{@render children()}
+</div>
