@@ -2,7 +2,6 @@
 	import type { Sentence } from '$lib/types';
 	import {
 		cleanCommas,
-		getSentence,
 		getAmountOfMissingCommas,
 		getAmountOfWrongCommas,
 		generateFeedbackHtml
@@ -41,7 +40,7 @@
 	{:else}
 		<h2>Set komma i sætningen under:</h2>
 		<textarea
-			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-teal-50"
+			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42]"
 			bind:value={userInputSentence}
 			oninput={() => {
 				userInputSentence.replace(/,/g, '') == lastInput.replace(/,/g, '')
@@ -51,10 +50,10 @@
 		></textarea>
 		{#if checkSentence}
 			<!-- content here -->
-			<p class={amountOfMissingCommas != 0 ? 'text-red-500' : 'text-teal-800'}>
+			<p class={amountOfMissingCommas != 0 ? 'text-red-400' : 'text-teal-400'}>
 				Der mangler {amountOfMissingCommas} kommaer
 			</p>
-			<p class={amountOfWrongCommas != 0 ? 'text-red-500' : 'text-teal-800'}>
+			<p class={amountOfWrongCommas != 0 ? 'text-red-400' : 'text-teal-400'}>
 				Der er {amountOfWrongCommas} forkerte kommaer
 			</p>
 
