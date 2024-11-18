@@ -6,7 +6,7 @@
 </script>
 
 <main
-	class="flex min-h-screen flex-col justify-between bg-[#1c2429] text-white *:w-full *:p-8 md:flex-row"
+	class="flex min-h-screen flex-col justify-between bg-[#1c2429] text-white *:w-full *:p-8 xl:flex-row"
 >
 	<section class="border-r-4 border-gray-600">
 		<h1 class="text-9xl font-bold text-teal-400">Komma</h1>
