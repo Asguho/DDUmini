@@ -8,6 +8,8 @@
 		generateFeedbackHtml
 	} from '$lib/utils';
 
+	import { confetti } from '@neoconfetti/svelte';
+
 	let { sentence }: { sentence: Sentence } = $props();
 	const originalSentence = $state(sentence.text);
 	let userInputSentence = $state(cleanCommas(originalSentence));
@@ -35,6 +37,7 @@
 		<h2 class="text-xl font-bold">
 			Opgave {sentence.id + 1}/{sentence.totalAmountsOfIdsInSet} løst
 		</h2>
+		<div use:confetti={{ particleCount: 200, force: 0.3 }}></div>
 	{:else}
 		<h2>Set komma i sætningen under:</h2>
 		<textarea
