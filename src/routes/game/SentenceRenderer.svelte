@@ -18,30 +18,27 @@
 			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0)
 	);
 
-	const feedbackHtml = $derived.by(() => {
-		let html = '<p>';
+	const feedbackHtml = $derived(() => {
+		const createCommaSpan = (color: string) =>
+			`<span style="background-color: ${color}; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span>`;
+
 		const wordGT = originalSentence.split(' ');
 		const wordUI = userInputSentence.split(' ');
 
-		for (let i = 0; i < wordGT.length; i++) {
-			const gtWord = wordGT[i];
-			const uiWord = wordUI[i] || '';
+		const html = wordGT
+			.map((gtWord, i) => {
+				const uiWord = wordUI[i] || '';
+				if (gtWord.includes(',') && uiWord.includes(',')) {
+					return gtWord.replace(',', '') + createCommaSpan('#2dd4bf');
+				} else if (gtWord.includes(',') && !uiWord.includes(',')) {
+					return gtWord.replace(',', '') + createCommaSpan('#ef4444');
+				} else {
+					return gtWord;
+				}
+			})
+			.join(' ');
 
-			if (gtWord.includes(',') && uiWord.includes(',')) {
-				html +=
-					gtWord.replace(',', '') +
-					'<span style="background-color: #2dd4bf; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
-			} else if (gtWord.includes(',') && !uiWord.includes(',')) {
-				html +=
-					gtWord.replace(',', '') +
-					'<span style="background-color: #ef4444; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
-			} else {
-				html += gtWord + ' ';
-			}
-		}
-
-		html += '</p>';
-		return html;
+		return `<p>${html}</p>`;
 	});
 
 	const isCorrect = $derived(amountOfMissingCommas == 0 && amountOfWrongCommas == 0);
