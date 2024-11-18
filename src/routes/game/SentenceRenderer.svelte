@@ -32,7 +32,9 @@
 
 <div class="flex h-fit w-full flex-col items-center justify-center">
 	{#if isCorrect}
-		<h2>Opgave {sentence.id + 1}/{sentence.totalAmountsOfIdsInSet} løst</h2>
+		<h2 class="text-xl font-bold">
+			Opgave {sentence.id + 1}/{sentence.totalAmountsOfIdsInSet} løst
+		</h2>
 	{:else}
 		<h2>Set komma i sætningen under:</h2>
 		<textarea
