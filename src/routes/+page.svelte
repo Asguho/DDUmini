@@ -55,7 +55,7 @@
 				<button>Following</button>
 			</div>
 			<ul class="mt-4 *:my-2 *:text-lg *:text-gray-600">
-				{#each Array(10)
+				{#each Array(9)
 					.fill()
 					.map((_, i) => ({ id: i, name: `Follower ${i + 1}` })) as follower}
 					<li class="">{follower.name}</li>
