@@ -1,61 +1,47 @@
-<script lang="ts">
-	import {
-		cleanCommas,
-		getSentence,
-		getAmountOfMissingCommas,
-		getAmountOfWrongCommas,
-		generateFeedbackHtml
-	} from '$lib/utils';
-	const originalSentence = getSentence();
-	let userInputSentence = $state(cleanCommas(originalSentence));
-	let amountOfMissingCommas = $derived(
-		getAmountOfMissingCommas(originalSentence, userInputSentence)
-	);
-	let amountOfWrongCommas = $derived(getAmountOfWrongCommas(originalSentence, userInputSentence));
-
-	let feedbackHtml = $derived(generateFeedbackHtml(originalSentence, userInputSentence));
-
-	let checkSentence = $state(false);
-	let lastInput = userInputSentence;
+<script>
+	const user = {
+		username: 'John Doe',
+		tag: '@johndoe'
+	};
 </script>
 
-<header class="absolute flex w-full flex-col items-center font-serif">
-	<h1 class="m-3 mx-5 rounded-full bg-teal-500 p-3 px-5 text-5xl font-bold italic tracking-wider">
-		Komma regler
-	</h1>
-	<div class="block h-0.5 w-full bg-black"></div>
-</header>
+<main class="flex flex-col items-center justify-between *:m-4 *:w-full md:flex-row">
+	<section class="border-r-4">
+		<h1 class="text-7xl font-bold text-teal-500">Komma</h1>
+		<ul class="*:text-2xl *:font-bold">
+			<li>Learn</li>
+			<li>Practice</li>
+			<li>leaderboard</li>
+			<li>Quests</li>
+			<li>Profile</li>
+		</ul>
+	</section>
+	<section>
+		<div>
+			<img src="" alt="" />
+			<div>
+				<h1 class="text-5xl font-bold">{user.username}</h1>
+				<h2>{user.tag}</h2>
+			</div>
 
-<section class="flex min-h-screen flex-col items-center font-serif">
-	<div class="flex h-screen w-full flex-col items-center justify-center">
-		<h2>Set komma i sætningen under:</h2>
-		<textarea
-			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-teal-50"
-			bind:value={userInputSentence}
-			oninput={() => {
-				userInputSentence.replace(/,/g, '') == lastInput.replace(/,/g, '')
-					? (lastInput = userInputSentence)
-					: (userInputSentence = lastInput);
-			}}
-		></textarea>
-		{#if checkSentence}
-			<!-- content here -->
-			<p class={amountOfMissingCommas != 0 ? 'text-red-500' : 'text-teal-800'}>
-				Der mangler {amountOfMissingCommas} kommaer
-			</p>
-			<p class={amountOfWrongCommas != 0 ? 'text-red-500' : 'text-teal-800'}>
-				Der er {amountOfWrongCommas} forkerte kommaer
-			</p>
-
-			{@html feedbackHtml}
-		{:else}
-			<!-- else content here -->
-			<button
-				class="mt-5 rounded-xl bg-teal-500 p-3 text-white"
-				onclick={() => (checkSentence = true)}
-			>
-				Tjek sætning</button
-			>
-		{/if}
-	</div>
-</section>
+			<div>
+				<span class="text-teal-500">23 following</span>
+				<span class="text-teal-500">23 followers</span>
+			</div>
+		</div>
+		<div>
+			<h1>Statistiks</h1>
+			<h2>Games played this year</h2>
+			<div class=""></div>
+		</div>
+	</section>
+	<section>
+		<h2 class="text-teal-500">999</h2>
+		<h2 class="text-teal-500">999</h2>
+		<h2 class="text-teal-500">999</h2>
+		<div>
+			<h2>Followers</h2>
+			<h2>following</h2>
+		</div>
+	</section>
+</main>
