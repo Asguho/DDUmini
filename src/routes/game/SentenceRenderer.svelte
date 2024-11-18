@@ -65,7 +65,7 @@
 				class="mt-5 rounded-xl bg-teal-500 p-3 text-white"
 				onclick={() => (checkSentence = true)}
 			>
-				Tjek sætning</button
+				Vis Svar</button
 			>
 		{/if}
 	{/if}
