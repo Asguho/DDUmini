@@ -1,71 +1,15 @@
+
 export const getSentence = () => {
-  while (true) {
-    const selectedSentence = SENTENCES[Math.floor(Math.random() * SENTENCES.length)];
-    if (selectedSentence.includes(',')) {
-      return selectedSentence; // Return the sentence if it contains a comma
-    }
-  }
-}
-
-export const cleanCommas = (sentence: string) => {
-  return sentence.replace(/,/g, ''); // Remove all commas from the sentence
-}
-
-export const verifyCommas = (groundTruth: string, userInput: string) => {
-  return groundTruth === userInput; // Return true if the ground truth matches the user input
-}
-
-export const getAmountOfMissingCommas = (groundTruth: string, userInput: string) => {
-  const groundTruthCommas = [...groundTruth.matchAll(/,/g)].map((match) => match.index);
-  let missingCommas = 0;
-  
-  for (const index of groundTruthCommas) {
-    if (userInput[index] !== ',') {
-      missingCommas++;
-    }
-  }
-  
-  return missingCommas;
-}
-
-export const getAmountOfWrongCommas = (groundTruth: string, userInput: string) => {
-  const userInputCommas = [...userInput.matchAll(/,/g)].map((match) => match.index);
-  let wrongCommas = 0;
-  
-  for (const index of userInputCommas) {
-    if (groundTruth[index] !== ',') {
-      wrongCommas++;
-    }
-  }
-  
-  return wrongCommas;
-}
-
-export const generateFeedbackHtml = (groundTruth: string, userInput: string) => {
-  let html = '<p>';
-  const wordGT = groundTruth.split(" ")
-  const wordUI = userInput.split(" ");
-
-  for (let i = 0; i < wordGT.length; i++) {
-    const gtWord = wordGT[i];
-    const uiWord = wordUI[i] || '';
-
-
-    if (gtWord.includes(',') && uiWord.includes(',')) {
-      html += gtWord.replace(",","")+'<span style="background-color: #2dd4bf; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
-    } else if (gtWord.includes(',') && !uiWord.includes(',')) {
-      html += gtWord.replace(",","")+'<span style="background-color: #ef4444; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
-    } else {
-      html += gtWord + ' ';
-    }
-  }
-
-  html += '</p>';
-  return html;
-};
+		while (true) {
+			const selectedSentence = SENTENCES[Math.floor(Math.random() * SENTENCES.length)];
+			if (selectedSentence.includes(',')) {
+				return selectedSentence;
+			}
+		}
+	};
 
 //text.split(".").map((i)=>i.trim()+".").filter((i)=>i.contains(","))
-const SENTENCES = [
+export const SENTENCES = [
     "Bob er en bemærkelsesværdig person, hvis liv og personlighed rummer en fascinerende kompleksitet og dybde, der kan fylde adskillige sider med historier, refleksioner og beskrivelser.",
     "Han er en person, som både har oplevet og gennemlevet mere, end de fleste mennesker kan forestille sig.",
     "Hans rejse gennem livet er fyldt med forskellige roller, interesser og eventyr, der alle bidrager til et rigt og nuanceret portræt af ham.",

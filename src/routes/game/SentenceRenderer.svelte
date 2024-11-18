@@ -1,30 +1,52 @@
 <script lang="ts">
 	import type { Sentence } from '$lib/types';
-	import {
-		cleanCommas,
-		getAmountOfMissingCommas,
-		getAmountOfWrongCommas,
-		generateFeedbackHtml
-	} from '$lib/utils';
-
 	import { confetti } from '@neoconfetti/svelte';
 
 	let { sentence }: { sentence: Sentence } = $props();
-	const originalSentence = $state(sentence.text);
-	let userInputSentence = $state(cleanCommas(originalSentence));
-	let amountOfMissingCommas = $derived(
-		getAmountOfMissingCommas(originalSentence, userInputSentence)
-	);
-	let amountOfWrongCommas = $derived(getAmountOfWrongCommas(originalSentence, userInputSentence));
-
-	let feedbackHtml = $derived(generateFeedbackHtml(originalSentence, userInputSentence));
-
+	const originalSentence = $derived(sentence.text);
+	let userInputSentence = $state(sentence.text.replace(/,/g, ''));
 	let checkSentence = $state(false);
-
-	// svelte-ignore state_referenced_locally
 	let lastInput = userInputSentence;
 
-	let isCorrect = $derived(amountOfMissingCommas == 0 && amountOfWrongCommas == 0);
+	const amountOfMissingCommas = $derived(
+		[...originalSentence.matchAll(/,/g)].filter((match) => userInputSentence[match.index] !== ',')
+			.length
+	);
+	const amountOfWrongCommas = $derived(
+		[...userInputSentence.matchAll(/,/g)]
+			.map((match) => match.index)
+			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0)
+	);
+
+	const generateFeedbackHtml = (groundTruth: string, userInput: string) => {
+		let html = '<p>';
+		const wordGT = groundTruth.split(' ');
+		const wordUI = userInput.split(' ');
+
+		for (let i = 0; i < wordGT.length; i++) {
+			const gtWord = wordGT[i];
+			const uiWord = wordUI[i] || '';
+
+			if (gtWord.includes(',') && uiWord.includes(',')) {
+				html +=
+					gtWord.replace(',', '') +
+					'<span style="background-color: #2dd4bf; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
+			} else if (gtWord.includes(',') && !uiWord.includes(',')) {
+				html +=
+					gtWord.replace(',', '') +
+					'<span style="background-color: #ef4444; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span> ';
+			} else {
+				html += gtWord + ' ';
+			}
+		}
+
+		html += '</p>';
+		return html;
+	};
+
+	const feedbackHtml = $derived(generateFeedbackHtml(originalSentence, userInputSentence));
+
+	const isCorrect = $derived(amountOfMissingCommas == 0 && amountOfWrongCommas == 0);
 
 	$effect(() => {
 		sentence.isSolved = isCorrect;
@@ -49,23 +71,20 @@
 			}}
 		></textarea>
 		{#if checkSentence}
-			<!-- content here -->
 			<p class={amountOfMissingCommas != 0 ? 'text-red-400' : 'text-teal-400'}>
 				Der mangler {amountOfMissingCommas} kommaer
 			</p>
 			<p class={amountOfWrongCommas != 0 ? 'text-red-400' : 'text-teal-400'}>
 				Der er {amountOfWrongCommas} forkerte kommaer
 			</p>
-
 			{@html feedbackHtml}
 		{:else}
-			<!-- else content here -->
 			<button
 				class="mt-5 rounded-xl bg-teal-500 p-3 text-white"
 				onclick={() => (checkSentence = true)}
 			>
-				Vis Svar</button
-			>
+				Vis Svar
+			</button>
 		{/if}
 	{/if}
 </div>
