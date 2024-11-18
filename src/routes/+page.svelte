@@ -35,7 +35,7 @@
 		</div>
 		<div class=" border-t-4 border-gray-600 pt-8 *:mb-8">
 			<div>
-				<h1 class="text-5xl font-bold">Statistiks</h1>
+				<h1 class="text-5xl font-bold">Statistics</h1>
 				<h2 class="text-lg text-gray-600">Games played this year</h2>
 			</div>
 
