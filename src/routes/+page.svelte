@@ -6,11 +6,11 @@
 </script>
 
 <main
-	class="flex min-h-screen flex-col justify-between bg-[#1c2429] text-white *:m-8 *:w-full md:flex-row"
+	class="flex min-h-screen flex-col justify-between bg-[#1c2429] text-white *:w-full *:p-8 md:flex-row"
 >
 	<section class="border-r-4 border-gray-600">
 		<h1 class="text-9xl font-bold text-teal-400">Komma</h1>
-		<ul class="mt-4 *:mt-4 *:text-3xl *:font-bold">
+		<ul class="mt-4 *:my-12 *:text-3xl *:font-bold">
 			<li>Learn</li>
 			<li>Practice</li>
 			<li>leaderboard</li>
@@ -45,15 +45,24 @@
 		</div>
 	</section>
 	<section>
-		<div class="*:my-2 *:text-2xl *:font-bold *:text-teal-400">
-			<h2>999</h2>
-			<h2>999</h2>
-			<h2>999</h2>
+		<div class="*:my-4 *:text-2xl *:font-bold *:text-teal-400">
+			<h2>9.999.999</h2>
+			<h2>9.999.999</h2>
+			<h2>9.999.999</h2>
 		</div>
 
-		<div>
-			<h2 class="">Followers</h2>
-			<h2>following</h2>
+		<div class=" mt-8 rounded-3xl border-4 border-gray-600 p-8">
+			<div class="flex justify-evenly *:text-2xl *:font-bold">
+				<button class="">Followers</button>
+				<button>Following</button>
+			</div>
+			<ul class="mt-4 *:my-2 *:text-lg *:text-gray-600">
+				{#each Array(10)
+					.fill()
+					.map((_, i) => ({ id: i, name: `Follower ${i + 1}` })) as follower}
+					<li class="">{follower.name}</li>
+				{/each}
+			</ul>
 		</div>
 	</section>
 </main>
