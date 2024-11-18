@@ -18,10 +18,10 @@
 			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0)
 	);
 
-	const generateFeedbackHtml = (groundTruth: string, userInput: string) => {
+	const feedbackHtml = $derived.by(() => {
 		let html = '<p>';
-		const wordGT = groundTruth.split(' ');
-		const wordUI = userInput.split(' ');
+		const wordGT = originalSentence.split(' ');
+		const wordUI = userInputSentence.split(' ');
 
 		for (let i = 0; i < wordGT.length; i++) {
 			const gtWord = wordGT[i];
@@ -42,9 +42,7 @@
 
 		html += '</p>';
 		return html;
-	};
-
-	const feedbackHtml = $derived(generateFeedbackHtml(originalSentence, userInputSentence));
+	});
 
 	const isCorrect = $derived(amountOfMissingCommas == 0 && amountOfWrongCommas == 0);
 
