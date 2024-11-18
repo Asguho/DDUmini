@@ -2,9 +2,8 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-
 @font-face {
-    font-family: "Feather Bold";
-    src: url("/Feather_Bold.ttf") format("truetype");
-    font-style: normal;
+	font-family: 'Feather Bold';
+	src: url('/fonts/Feather_Bold.ttf') format('truetype');
+	font-style: normal;
 }
