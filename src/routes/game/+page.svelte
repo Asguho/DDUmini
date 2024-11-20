@@ -5,19 +5,20 @@
 	import SentenceRenderer from './SentenceRenderer.svelte';
 	import { fade } from 'svelte/transition';
 	import { ArrowBigLeft, Heart } from 'lucide-svelte';
+	import { enhance } from '$app/forms';
 
 	let sentencesToSolve: Sentence[] = $state([]);
-	let amount = 5;
+	const AMOUNT = 2;
 	newSentences();
 
 	function newSentences() {
 		sentencesToSolve = [];
-		for (let i = 0; i < amount; i++) {
+		for (let i = 0; i < AMOUNT; i++) {
 			sentencesToSolve.push({
 				id: i,
 				text: getSentence(),
 				isSolved: false,
-				totalAmountsOfIdsInSet: amount
+				totalAmountsOfIdsInSet: AMOUNT
 			});
 		}
 	}
@@ -62,12 +63,23 @@
 	{:else}
 		<div class="w-full text-center">
 			<h1 class="mb-6 font-feather text-2xl font-bold">Tillykke! Du har løst alle opgaverne</h1>
-			<button
-				onclick={newSentences}
-				class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+			<form
+				action="?/finishGame"
+				method="post"
+				use:enhance={() => {
+					return async ({ update }) => {
+						newSentences();
+						update();
+					};
+				}}
 			>
-				Nye opgaver
-			</button>
+				<button
+					type="submit"
+					class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+				>
+					Nye opgaver
+				</button>
+			</form>
 		</div>
 	{/if}
 </section>
