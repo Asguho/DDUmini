@@ -18,7 +18,7 @@
 			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0)
 	);
 
-	const feedbackHtml = $derived(() => {
+	const feedbackHtml = $derived.by(() => {
 		const createCommaSpan = (color: string) =>
 			`<span style="background-color: ${color}; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span>`;
 
