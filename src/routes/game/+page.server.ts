@@ -37,6 +37,7 @@ export const actions = {
 				return {};
 			}
 		})();
+        
 		const today = new Date().toISOString().split('T')[0];
 		const previousActivityToday = activityHistory[today] ?? 0;
 		activityHistory[today] = previousActivityToday + 1;
