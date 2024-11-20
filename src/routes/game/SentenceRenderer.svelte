@@ -55,7 +55,7 @@
 		</h2>
 		<div use:confetti={{ particleCount: 100, force: 0.1 }}></div>
 	{:else}
-		<h2 class="font-sans">Set komma i sætningen:</h2>
+		<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">Indsæt manglende kommaer</h2>
 		<textarea
 			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42] text-xl"
 			bind:value={userInputSentence}
@@ -74,12 +74,14 @@
 			</p>
 			{@html feedbackHtml}
 		{:else}
-			<button
-				class="mt-5 rounded-xl bg-teal-950 p-3 text-white"
-				onclick={() => (checkSentence = true)}
-			>
-				Vis Svar
-			</button>
+			<div class="mt-10 flex w-full max-w-2xl flex-row justify-between font-feather">
+				<button
+					class="rounded-xl bg-[#11161a] p-3 text-white opacity-10 transition-all duration-100 hover:opacity-50"
+					onclick={() => (checkSentence = true)}
+				>
+					Vis Svar
+				</button>
+			</div>
 		{/if}
 	{/if}
 </div>
