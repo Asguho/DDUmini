@@ -13,7 +13,7 @@
 			<li>Practice</li>
 			<li>leaderboard</li>
 			<li>Quests</li>
-			<li>Profile</li>
+			<li><a href="/auth">Profile</a></li>
 		</ul>
 	</section>
 	<section>
