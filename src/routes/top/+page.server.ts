@@ -8,9 +8,7 @@ export const load = (async (event) => {
 	if (!event.locals.user) {
 		throw redirect(302, '/auth');
 	}
-	const [user] = await db.select().from(table.user).where(eq(table.user.id, event.locals.user.id));
-	console.log(user);
-	return {
-		user
-	};
+	//get all users and rank based of xp
+	const users = await db.select().from(table.user).orderBy(table.user.xp);
+	return { users };
 }) satisfies PageServerLoad;
