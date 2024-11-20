@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@neoconfetti/svelte": "^2.2.1",
-    "@sveltejs/adapter-node": "^5.2.9"
+    "@sveltejs/adapter-node": "^5.2.9",
+    "lucide-svelte": "^0.460.1"
   }
 }
