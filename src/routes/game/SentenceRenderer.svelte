@@ -6,7 +6,7 @@
 	const originalSentence = $derived(sentence.text);
 	let userInputSentence = $state(sentence.text.replace(/,/g, ''));
 	let checkSentence = $state(false);
-	let lastInput = userInputSentence;
+	let lastInput = $state(sentence.text.replace(/,/g, ''));
 
 	const amountOfMissingCommas = $derived(
 		[...originalSentence.matchAll(/,/g)].filter((match) => userInputSentence[match.index] !== ',')
@@ -50,14 +50,14 @@
 
 <div class="flex h-fit w-full flex-col items-center justify-center">
 	{#if isCorrect}
-		<h2 class="text-xl font-bold">
+		<h2 class="font-feather text-2xl font-bold">
 			Opgave {sentence.id + 1}/{sentence.totalAmountsOfIdsInSet} løst
 		</h2>
-		<div use:confetti={{ particleCount: 200, force: 0.3 }}></div>
+		<div use:confetti={{ particleCount: 100, force: 0.1 }}></div>
 	{:else}
-		<h2>Set komma i sætningen under:</h2>
+		<h2 class="font-sans">Set komma i sætningen:</h2>
 		<textarea
-			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42]"
+			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42] text-xl"
 			bind:value={userInputSentence}
 			oninput={() => {
 				userInputSentence.replace(/,/g, '') == lastInput.replace(/,/g, '')
@@ -75,7 +75,7 @@
 			{@html feedbackHtml}
 		{:else}
 			<button
-				class="mt-5 rounded-xl bg-teal-500 p-3 text-white"
+				class="mt-5 rounded-xl bg-teal-950 p-3 text-white"
 				onclick={() => (checkSentence = true)}
 			>
 				Vis Svar
