@@ -25,11 +25,25 @@ export const actions = {
 		if (!event.locals.user) {
 			return redirect(302, '/auth');
 		}
+
+		//get the user lives
+		const [user] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.id, event.locals.user.id));
+
+		let userLifes = user.lifes;
+		let mappedLifes = ((value, inMin, inMax, outMin, outMax) => {
+			return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+		})(userLifes, 0, 10, 0.8, 2);
+
+		let newXp = Math.floor((user.xp + 100) * mappedLifes);
+
 		// update xp
 		await db
 			.update(table.user)
 			.set({
-				xp: sql`${table.user.xp} + 100`
+				xp: newXp
 			})
 			.where(eq(table.user.id, event.locals.user.id));
 
