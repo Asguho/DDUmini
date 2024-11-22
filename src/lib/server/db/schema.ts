@@ -8,7 +8,8 @@ export const user = pgTable('user', {
 	xp: integer('xp').notNull().default(0),
 	lifes: integer('lifes').notNull().default(10), //.check('lifes_check', 'lifes BETWEEN 1 AND 10'),
 	activityHistory: text('activity_history').notNull().default('{}'),
-	showTutorial: boolean('show_tutorial').notNull().default(true)
+	showTutorial: boolean('show_tutorial').notNull().default(true),
+	pfpB64: text('pfp-b64').notNull().default('')
 });
 
 export const session = pgTable('session', {

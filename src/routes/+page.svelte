@@ -28,11 +28,25 @@
 	</section>
 	<section>
 		<div class=" *:mb-8">
-			<img
-				src="/img_avatar.png"
-				alt=""
-				class="aspect-video w-full rounded-3xl bg-cover object-cover"
-			/>
+			{#if data.user.pfpB64}
+				<!-- content here -->
+				<img
+					src={'data:image/png;base64,' + data.user.pfpB64}
+					alt=""
+					class="aspect-video w-full rounded-3xl bg-cover object-cover"
+				/>
+			{:else}
+				<!-- else content here -->
+				<div
+					class="flex aspect-video w-full items-center justify-center rounded-3xl bg-gray-600 text-sm *:text-center"
+				>
+					<p>
+						no profile picture, to to <a href="/auth" class="font-mono text-teal-400 opacity-100"
+							>profile</a
+						> to upload one!
+					</p>
+				</div>
+			{/if}
 			<div>
 				<h1 class="text-5xl font-bold">{user.username}</h1>
 				<h2 class="text-lg text-gray-600">

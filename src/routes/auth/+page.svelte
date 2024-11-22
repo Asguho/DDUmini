@@ -19,6 +19,37 @@
 	<h1 class="*: w-fit text-5xl font-bold text-teal-400">Profile</h1>
 	<div class="mt-4 flex flex-col items-center rounded-3xl border-4 border-gray-600 p-8">
 		<h2 class="text-3xl font-bold">Hi, {data.user.username}!</h2>
+		<div class="w-full">
+			{#if data.user.pfpB64}
+				<img
+					src={'data:image/png;base64,' + data.user.pfpB64}
+					alt=""
+					class="aspect-video w-full rounded-3xl bg-cover object-cover"
+				/>
+			{/if}
+			<div
+				class="/10 my-3 flex w-full items-center justify-center rounded-3xl border-2 border-teal-700 bg-teal-950/10 py-5 text-sm *:text-center"
+			>
+				<form
+					enctype="multipart/form-data"
+					action="?/uploadPfp"
+					method="post"
+					use:enhance={() => {
+						return async ({ update }) => {
+							update();
+						};
+					}}
+				>
+					<input type="file" name="pfp" />
+					<button
+						type="submit"
+						class="mt-3 block rounded-xl border-2 border-teal-400 p-2 px-4 text-teal-400"
+					>
+						Upload Profile Picture
+					</button>
+				</form>
+			</div>
+		</div>
 		<p class="text-lg text-gray-600">User ID: {data.user.id}</p>
 		<p class="text-lg text-gray-600">XP: {data.user.xp}</p>
 		<div class="flex w-full justify-center">
