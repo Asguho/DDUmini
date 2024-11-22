@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div class="flex h-fit w-full flex-col items-center justify-center">
+<div class="flex h-fit w-full flex-col items-center justify-center font-sans">
 	{#if isCorrect}
 		<h2 class="font-feather text-2xl font-bold">
 			Opgave {sentence.id + 1}/{sentence.totalAmountsOfIdsInSet} løst

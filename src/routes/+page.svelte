@@ -21,9 +21,9 @@
 	<section class="border-gray-600 xl:border-r-4">
 		<h1 class="text-8xl font-bold text-teal-400 2xl:text-9xl">Komma</h1>
 		<ul class="mt-4 *:my-12 *:text-3xl *:font-bold">
-			<li><a href="/game">Learn</a></li>
+			<li><a class="text-4xl font-extrabold text-teal-200" href="/game">Learn</a></li>
 			<li><a href="/help">Rules</a></li>
-			<li><a href="/top">leaderboard</a></li>
+			<li><a href="/top">Leaderboard</a></li>
 			<li><a href="/auth">Profile</a></li>
 		</ul>
 	</section>
