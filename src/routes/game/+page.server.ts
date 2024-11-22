@@ -35,7 +35,7 @@ export const actions = {
 		let userLifes = user.lifes;
 		let mappedLifes = ((value, inMin, inMax, outMin, outMax) => {
 			return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-		})(userLifes, 0, 10, 0.8, 2);
+		})(userLifes, 0, 10, 1, 1.5);
 
 		let newXp = Math.floor((user.xp + 100) * mappedLifes);
 
