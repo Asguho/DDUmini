@@ -112,5 +112,22 @@ export const actions = {
 
 		//redirect to game
 		return redirect(302, '/game');
+	},
+	disableTutorial: async (event) => {
+		// check if user is logged in
+		if (!event.locals.user) {
+			return redirect(302, '/auth');
+		}
+
+		// update show tutorial
+		await db
+			.update(table.user)
+			.set({
+				showTutorial: false
+			})
+			.where(eq(table.user.id, event.locals.user.id));
+
+		//redirect to game
+		return redirect(302, '/game');
 	}
 } satisfies Actions;

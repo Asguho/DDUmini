@@ -56,13 +56,30 @@
 			<span class="z-10 size-7 font-feather text-2xl font-extrabold italic text-teal-400">XP</span>
 		</div>
 	</div>
-	<div class="max-w-2xl rounded-2xl border-2 border-white p-3">
-		Tutorial: indtast manglende kommaer i sætningen herunder, når alle kommaerne er korrekte, er
-		opgaven løst, og du vil automatisk gå videre til næste opgave. Når alle opgaver er løst vil du
-		modtage XP efter hvor liv du har tilbage såvel som 3 liv. Du mister liv ved at trykke på "Vis
-		Svar" knappen.
-		<button class="mt-3 block rounded-xl border-2 border-white p-2 px-4"> ok! </button>
-	</div>
+	{#if data.user.showTutorial}
+		<div class="max-w-2xl rounded-2xl border-2 border-white p-3">
+			Tutorial: indtast manglende kommaer i sætningen herunder, når alle kommaerne er korrekte, er
+			opgaven løst, og du vil automatisk gå videre til næste opgave. Når alle opgaver er løst vil du
+			modtage XP efter hvor liv du har tilbage såvel som 3 liv. Du mister liv ved at trykke på "Vis
+			Svar" knappen.
+			<form
+				action="?/disableTutorial"
+				method="post"
+				use:enhance={() => {
+					return async ({ update }) => {
+						update();
+					};
+				}}
+			>
+				<button
+					type="submit"
+					class="mt-3 block rounded-xl border-2 border-teal-400 p-2 px-4 text-teal-400"
+				>
+					Ok!
+				</button>
+			</form>
+		</div>
+	{/if}
 </header>
 
 <section class="flex min-h-screen flex-row items-center overflow-x-clip font-serif">
