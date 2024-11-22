@@ -30,7 +30,7 @@
 	let allSentencesSolved = $derived(sentencesToSolve.every((sentence) => sentence.isSolved));
 </script>
 
-<header class=" absolute flex w-full flex-row px-3 py-4">
+<header class=" absolute flex w-full flex-col items-center px-3 py-4">
 	<div class="container mx-auto flex w-full flex-row items-center justify-between gap-10">
 		<div class="flex flex-row items-center justify-start gap-5">
 			<h1 class="text-6xl font-bold text-teal-400 2xl:text-8xl">Komma</h1>
@@ -49,6 +49,13 @@
 			<span class="text-2xl text-red-400">{data.user.lifes}</span>
 			<Heart class="size-7 text-red-400" />
 		</div>
+	</div>
+	<div class="max-w-2xl rounded-2xl border-2 border-white p-3">
+		Tutorial: indtast manglende kommaer i sætningen herunder, når alle kommaerne er korrekte, er
+		opgaven løst, og du vil automatisk gå videre til næste opgave. Når alle opgaver er løst vil du
+		modtage XP efter hvor liv du har tilbage såvel som 3 liv. Du mister liv ved at trykke på "Vis
+		Svar" knappen.
+		<button class="mt-3 block rounded-xl border-2 border-white p-2 px-4"> ok! </button>
 	</div>
 </header>
 
