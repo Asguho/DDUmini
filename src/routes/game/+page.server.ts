@@ -37,7 +37,7 @@ export const actions = {
 			return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 		})(userLifes, 0, 10, 1, 1.5);
 
-		let newXp = Math.floor((user.xp + 100) * mappedLifes);
+		let newXp = Math.floor(user.xp + 100 * mappedLifes);
 
 		// update xp
 		await db
