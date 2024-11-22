@@ -45,9 +45,15 @@
 				max={sentencesToSolve.length}
 			></progress>
 		</div>
-		<div class="flex flex-row items-center justify-start gap-5">
-			<span class="text-2xl text-red-400">{data.user.lifes}</span>
-			<Heart class="size-7 text-red-400" />
+		<div class="relative flex flex-row items-center justify-start gap-5">
+			<div class="absolute z-0 h-8 w-14 animate-ping bg-red-900/20 blur-md"></div>
+			<span class="z-10 text-2xl text-red-400">{data.user.lifes}</span>
+			<Heart class="z-10 size-7 text-red-400" />
+		</div>
+		<div class="relative flex flex-row items-baseline justify-start gap-2">
+			<div class="absolute z-0 h-8 w-24 animate-pulse bg-teal-900 blur-md"></div>
+			<span class="z-10 text-2xl text-teal-400">{data.user.xp}</span>
+			<span class="z-10 size-7 font-feather text-2xl font-extrabold italic text-teal-400">XP</span>
 		</div>
 	</div>
 	<div class="max-w-2xl rounded-2xl border-2 border-white p-3">
