@@ -7,8 +7,12 @@
 	import { ArrowBigLeft, Heart } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
 
+	import type { PageServerData } from './$types';
+	import { goto } from '$app/navigation';
+	let { data }: { data: PageServerData } = $props();
+
 	let sentencesToSolve: Sentence[] = $state([]);
-	const AMOUNT = 2;
+	const AMOUNT = 5;
 	newSentences();
 
 	function newSentences() {
@@ -42,7 +46,7 @@
 			></progress>
 		</div>
 		<div class="flex flex-row items-center justify-start gap-5">
-			<span class="text-2xl text-red-400">5</span>
+			<span class="text-2xl text-red-400">{data.user.lifes}</span>
 			<Heart class="size-7 text-red-400" />
 		</div>
 	</div>
@@ -57,29 +61,48 @@
 				in:fade
 				out:fade={{ delay: 1000, duration: 500 }}
 			>
-				<SentenceRenderer {sentence} />
+				<SentenceRenderer {sentence} user={data.user} />
 			</div>
 		{/each}
 	{:else}
 		<div class="w-full text-center">
 			<h1 class="mb-6 font-feather text-2xl font-bold">Tillykke! Du har løst alle opgaverne</h1>
-			<form
-				action="?/finishGame"
-				method="post"
-				use:enhance={() => {
-					return async ({ update }) => {
-						newSentences();
-						update();
-					};
-				}}
-			>
-				<button
-					type="submit"
-					class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+			<div class="flex w-full flex-row justify-center gap-4">
+				<form
+					action="?/finishGame"
+					method="post"
+					use:enhance={() => {
+						return async ({ update }) => {
+							newSentences();
+							update();
+						};
+					}}
 				>
-					Nye opgaver
-				</button>
-			</form>
+					<button
+						type="submit"
+						class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+					>
+						Nye opgaver
+					</button>
+				</form>
+				<form
+					action="?/finishGame"
+					method="post"
+					use:enhance={() => {
+						return async ({ update }) => {
+							update();
+							goto('/');
+						};
+					}}
+				>
+					<button
+						type="submit"
+						class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+					>
+						Færdig
+					</button>
+				</form>
+			</div>
 		</div>
 	{/if}
 </section>

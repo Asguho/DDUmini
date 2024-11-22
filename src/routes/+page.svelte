@@ -2,6 +2,7 @@
 	import type { User } from '$lib/server/db/schema';
 	import { convertObjectToArray } from '$lib/utils';
 	import type { PageServerData } from './$types';
+	import Leaderboard from './top/Leaderboard.svelte';
 	let { data }: { data: PageServerData } = $props();
 	let user = $state(data.user);
 
@@ -40,8 +41,11 @@
 			</div>
 
 			<div class="flex justify-between text-lg *:w-full *:font-bold *:text-teal-400">
-				<span class="">23 following</span>
-				<span class="">23 followers</span>
+				<span><span class="mr-2 text-gray-600">Global Rank:</span>{data.rank}</span>
+				<span>
+					<span class="mr-2 text-gray-600">XP:</span>
+					{user.xp}
+				</span>
 			</div>
 		</div>
 		<div class=" border-t-4 border-gray-600 pt-8 *:mb-8">
@@ -66,24 +70,8 @@
 		</div>
 	</section>
 	<section>
-		<div class="*:my-4 *:text-2xl *:font-bold *:text-teal-400">
-			<h2>9.999.999</h2>
-			<h2>9.999.999</h2>
-			<h2>9.999.999</h2>
-		</div>
-
 		<div class=" mt-8 rounded-3xl border-4 border-gray-600 p-8">
-			<div class="flex justify-evenly *:text-2xl *:font-bold">
-				<button class="">Followers</button>
-				<button>Following</button>
-			</div>
-			<ul class="mt-4 *:my-2 *:text-lg *:text-gray-600">
-				{#each Array(9)
-					.fill(null)
-					.map((_, i) => ({ id: i, name: `Follower ${i + 1}` })) as follower}
-					<li class="">{follower.name}</li>
-				{/each}
-			</ul>
+			<Leaderboard users={data.users}></Leaderboard>
 		</div>
 	</section>
 </main>

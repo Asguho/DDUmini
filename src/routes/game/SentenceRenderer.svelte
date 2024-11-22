@@ -2,7 +2,10 @@
 	import type { Sentence } from '$lib/types';
 	import { confetti } from '@neoconfetti/svelte';
 
-	let { sentence }: { sentence: Sentence } = $props();
+	let { sentence, user }: { sentence: Sentence; user: User } = $props();
+
+	import { enhance } from '$app/forms';
+	import type { User } from '$lib/server/db/schema';
 	const originalSentence = $derived(sentence.text);
 	let userInputSentence = $state(sentence.text.replace(/,/g, ''));
 	let checkSentence = $state(false);
@@ -73,15 +76,29 @@
 				Der er {amountOfWrongCommas} forkerte kommaer
 			</p>
 			{@html feedbackHtml}
-		{:else}
+		{:else if user.lifes > 0}
+			<!-- content here -->
 			<div class="mt-10 flex w-full max-w-2xl flex-row justify-between font-feather">
-				<button
-					class="rounded-xl bg-[#11161a] p-3 text-white opacity-10 transition-all duration-100 hover:opacity-50"
-					onclick={() => (checkSentence = true)}
+				<form
+					action="?/deductLife"
+					method="post"
+					use:enhance={() => {
+						return ({ update }) => {
+							checkSentence = true;
+							update();
+						};
+					}}
 				>
-					Vis Svar
-				</button>
+					<button
+						type="submit"
+						class="rounded-xl bg-[#11161a] p-3 text-white opacity-10 transition-all duration-100 hover:opacity-50"
+					>
+						Vis Svar
+					</button>
+				</form>
 			</div>
+		{:else}
+			<p class="text-red-400">Du har ikke flere liv</p>
 		{/if}
 	{/if}
 </div>
