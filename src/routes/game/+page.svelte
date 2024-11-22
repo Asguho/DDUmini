@@ -58,10 +58,10 @@
 	</div>
 	{#if data.user.showTutorial}
 		<div class="max-w-2xl rounded-2xl border-2 border-white p-3">
-			Tutorial: indtast manglende kommaer i sætningen herunder, når alle kommaerne er korrekte, er
-			opgaven løst, og du vil automatisk gå videre til næste opgave. Når alle opgaver er løst vil du
-			modtage XP efter hvor liv du har tilbage såvel som 3 liv. Du mister liv ved at trykke på "Vis
-			Svar" knappen.
+			Tutorial: Indtast de manglende kommaer i sætningen herunder. Når alle kommaerne er korrekte,
+			er opgaven løst, og du vil automatisk gå videre til næste opgave. Når alle opgaver er løst,
+			vil du modtage XP baseret på, hvor mange liv du har tilbage, samt 3 nye liv. Du mister liv ved
+			at trykke på "Vis svar"-knappen.
 			<form
 				action="?/disableTutorial"
 				method="post"
