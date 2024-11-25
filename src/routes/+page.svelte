@@ -42,7 +42,7 @@
 					class="flex aspect-video w-full items-center justify-center rounded-3xl bg-gray-600 text-sm *:text-center"
 				>
 					<p>
-						no profile picture, to <a href="/auth" class="font-mono text-teal-400 opacity-100"
+						no profile picture, go to <a href="/auth" class="font-mono text-teal-400 opacity-100"
 							>profile</a
 						> to upload one!
 					</p>
