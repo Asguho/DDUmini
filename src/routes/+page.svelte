@@ -7,7 +7,6 @@
 	let user = $state(data.user);
 
 	let activityData = JSON.parse(data.user.activityHistory || '{}');
-	console.log(activityData);
 </script>
 
 <svelte:head>

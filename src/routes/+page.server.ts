@@ -9,7 +9,6 @@ export const load = (async (event) => {
 		throw redirect(302, '/auth');
 	}
 	const [user] = await db.select().from(table.user).where(eq(table.user.id, event.locals.user.id));
-	console.log(user);
 
 	//get all useres and determine the rank of the user
 	const users = await db.select().from(table.user).orderBy(desc(table.user.xp));

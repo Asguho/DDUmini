@@ -5,7 +5,6 @@
 	let { data }: { data: PageServerData } = $props();
 
 	let activityData = JSON.parse(data.user.activityHistory || '{}');
-	console.log(activityData); // of type {"2024-11-20": 1, "2024-11-10": 3}
 </script>
 
 <svelte:head>
