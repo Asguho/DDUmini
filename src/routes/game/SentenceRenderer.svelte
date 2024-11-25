@@ -58,7 +58,13 @@
 		</h2>
 		<div use:confetti={{ particleCount: 100, force: 0.1 }}></div>
 	{:else}
-		<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">Indsæt manglende kommaer</h2>
+		{#if checkSentence}
+			<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">Ret din Sætning</h2>
+		{:else}
+			<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">
+				Indsæt manglende kommaer
+			</h2>
+		{/if}
 		<textarea
 			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42] text-xl"
 			bind:value={userInputSentence}
