@@ -91,7 +91,7 @@
 				>
 					<button
 						type="submit"
-						class="rounded-xl bg-[#11161a] p-3 text-white opacity-10 transition-all duration-100 hover:opacity-50"
+						class="rounded-xl bg-[#11161a] p-3 text-white opacity-40 transition-all duration-100 hover:opacity-70"
 					>
 						Vis Svar
 					</button>
