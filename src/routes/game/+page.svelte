@@ -31,7 +31,7 @@
 </script>
 
 <header class=" absolute flex w-full flex-col items-center px-3 py-4">
-	<div class="container mx-auto flex w-full flex-row items-center justify-between gap-10">
+	<div class="container mx-auto flex w-full max-w-6xl flex-row items-center justify-between gap-10">
 		<div class="flex flex-row items-center justify-start gap-5">
 			<h1 class="text-6xl font-bold text-teal-400 2xl:text-8xl">Komma</h1>
 		</div>
@@ -51,7 +51,6 @@
 			<Heart class="z-10 size-7 text-red-400" />
 		</div>
 		<div class="relative flex flex-row items-baseline justify-start gap-2">
-			<div class="absolute z-0 h-8 w-24 animate-pulse bg-teal-900 blur-md"></div>
 			<span class="z-10 text-2xl text-teal-400">{data.user.xp}</span>
 			<span class="z-10 size-7 font-feather text-2xl font-extrabold italic text-teal-400">XP</span>
 		</div>
