@@ -83,57 +83,59 @@
 </header>
 
 <section class="flex min-h-screen flex-row items-center overflow-x-clip font-serif">
-	{#if !allSentencesSolved}
-		{#each sentencesToSolve.filter((sentence) => !sentence.isSolved) as sentence (sentence.id)}
-			<div
-				class="min-w-full"
-				animate:flip={{ duration: 500, delay: 1000 }}
-				in:fade
-				out:fade={{ delay: 1000, duration: 500 }}
-			>
-				<SentenceRenderer {sentence} user={data.user} />
-			</div>
-		{/each}
-	{:else}
-		<div class="w-full text-center">
-			<h1 class="mb-6 font-feather text-2xl font-bold">Tillykke! Du har løst alle opgaverne</h1>
-			<div class="flex w-full flex-row justify-center gap-4">
-				<form
-					action="?/finishGame"
-					method="post"
-					use:enhance={() => {
-						return async ({ update }) => {
-							newSentences();
-							update();
-						};
-					}}
+	{#if !data.user.showTutorial}
+		{#if !allSentencesSolved}
+			{#each sentencesToSolve.filter((sentence) => !sentence.isSolved) as sentence (sentence.id)}
+				<div
+					class="min-w-full"
+					animate:flip={{ duration: 500, delay: 1000 }}
+					in:fade
+					out:fade={{ delay: 1000, duration: 500 }}
 				>
-					<button
-						type="submit"
-						class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+					<SentenceRenderer {sentence} user={data.user} />
+				</div>
+			{/each}
+		{:else}
+			<div class="w-full text-center">
+				<h1 class="mb-6 font-feather text-2xl font-bold">Tillykke! Du har løst alle opgaverne</h1>
+				<div class="flex w-full flex-row justify-center gap-4">
+					<form
+						action="?/finishGame"
+						method="post"
+						use:enhance={() => {
+							return async ({ update }) => {
+								newSentences();
+								update();
+							};
+						}}
 					>
-						Nye opgaver
-					</button>
-				</form>
-				<form
-					action="?/finishGame"
-					method="post"
-					use:enhance={() => {
-						return async ({ update }) => {
-							update();
-							goto('/');
-						};
-					}}
-				>
-					<button
-						type="submit"
-						class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+						<button
+							type="submit"
+							class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+						>
+							Nye opgaver
+						</button>
+					</form>
+					<form
+						action="?/finishGame"
+						method="post"
+						use:enhance={() => {
+							return async ({ update }) => {
+								update();
+								goto('/');
+							};
+						}}
 					>
-						Færdig
-					</button>
-				</form>
+						<button
+							type="submit"
+							class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
+						>
+							Færdig
+						</button>
+					</form>
+				</div>
 			</div>
-		</div>
+		{/if}
 	{/if}
 </section>
 
