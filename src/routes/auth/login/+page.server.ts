@@ -27,10 +27,12 @@ export const actions: Actions = {
 		const password = formData.get('password');
 
 		if (!validateUsername(username)) {
-			return fail(400, { message: 'Invalid username' });
+			return fail(400, {
+				message: 'Invalid username (only lowercase letters, numbers, hyphens, and underscores)'
+			});
 		}
 		if (!validatePassword(password)) {
-			return fail(400, { message: 'Invalid password' });
+			return fail(400, { message: 'Invalid password (min 6 characters)' });
 		}
 
 		const results = await db.select().from(table.user).where(eq(table.user.username, username));
@@ -40,7 +42,7 @@ export const actions: Actions = {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
-		const validPassword = await verify(existingUser.passwordHash, password,HASH_OPTIONS);
+		const validPassword = await verify(existingUser.passwordHash, password, HASH_OPTIONS);
 		if (!validPassword) {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
@@ -57,10 +59,12 @@ export const actions: Actions = {
 		const password = formData.get('password');
 
 		if (!validateUsername(username)) {
-			return fail(400, { message: 'Invalid username' });
+			return fail(400, {
+				message: 'Invalid username, (only lowercase letters, numbers, hyphens, and underscores)'
+			});
 		}
 		if (!validatePassword(password)) {
-			return fail(400, { message: 'Invalid password' });
+			return fail(400, { message: 'Invalid password, (min 6 characters)' });
 		}
 
 		const userId = generateUserId();
