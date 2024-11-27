@@ -25,6 +25,9 @@
 		}))
 	);
 
+	let newButtonElement: any;
+	let finishedButtonElement: any;
+
 	let allSentencesSolved = $derived(sentencesToSolve.every((sentence) => sentence.isSolved));
 
 	function returnFormForIndex(index: number) {
@@ -114,6 +117,7 @@
 						action="?/finishGame"
 						method="post"
 						use:enhance={() => {
+							finishedButtonElement.disabled = true;
 							return async ({ update }) => {
 								await update();
 								goto('/newGame');
@@ -123,6 +127,7 @@
 						<input type="hidden" name="gameId" value={gameId} />
 						<button
 							type="submit"
+							bind:this={finishedButtonElement}
 							class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
 						>
 							Nye opgaver
@@ -132,8 +137,9 @@
 						action="?/finishGame"
 						method="post"
 						use:enhance={() => {
+							newButtonElement.disabled = true;
 							return async ({ update }) => {
-								update();
+								await update();
 								goto('/');
 							};
 						}}
@@ -141,6 +147,7 @@
 						<input type="hidden" name="gameId" value={gameId} />
 						<button
 							type="submit"
+							bind:this={newButtonElement}
 							class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
 						>
 							Færdig
