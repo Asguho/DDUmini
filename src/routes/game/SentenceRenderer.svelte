@@ -2,109 +2,115 @@
 	import type { Sentence } from '$lib/types';
 	import { confetti } from '@neoconfetti/svelte';
 
-	let { sentence, user }: { sentence: Sentence; user: User } = $props();
+	import type { ActionData } from './$types';
+
+	let showConfetti = $state(false);
+
+	let {
+		sentence,
+		user,
+		gameId,
+		form
+	}: { sentence: Sentence; user: User; gameId: string; form: ActionData } = $props();
 
 	import { enhance } from '$app/forms';
 	import type { User } from '$lib/server/db/schema';
 	const originalSentence = $derived(sentence.text);
-	let userInputSentence = $state(sentence.text.replace(/,/g, ''));
-	let checkSentence = $state(false);
+	let userInputSentence = $state(sentence.text);
 	let lastInput = $state(sentence.text.replace(/,/g, ''));
 
-	const amountOfMissingCommas = $derived(
-		[...originalSentence.matchAll(/,/g)].filter((match) => userInputSentence[match.index] !== ',')
-			.length
-	);
-	const amountOfWrongCommas = $derived(
-		[...userInputSentence.matchAll(/,/g)]
-			.map((match) => match.index)
-			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0)
-	);
-
-	const feedbackHtml = $derived.by(() => {
-		const createCommaSpan = (color: string) =>
-			`<span style="background-color: ${color}; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span>`;
-
-		const wordGT = originalSentence.split(' ');
-		const wordUI = userInputSentence.split(' ');
-
-		const html = wordGT
-			.map((gtWord, i) => {
-				const uiWord = wordUI[i] || '';
-				if (gtWord.includes(',') && uiWord.includes(',')) {
-					return gtWord.replace(',', '') + createCommaSpan('#2dd4bf');
-				} else if (gtWord.includes(',') && !uiWord.includes(',')) {
-					return gtWord.replace(',', '') + createCommaSpan('#ef4444');
-				} else {
-					return gtWord;
-				}
-			})
-			.join(' ');
-
-		return `<p>${html}</p>`;
-	});
-
-	const isCorrect = $derived(amountOfMissingCommas == 0 && amountOfWrongCommas == 0);
-
 	$effect(() => {
-		sentence.isSolved = isCorrect;
+		if (form) {
+			console.log(sentence);
+			userInputSentence = form.previousInput;
+			console.log('form', form);
+			if (form.sentenceId !== sentence.id) {
+				return;
+			}
+			console.log(form);
+			if (form.isCorrect) {
+				console.log('isCorrect');
+				showConfetti = true;
+				//wait for 2 seconds
+				setTimeout(() => {
+					sentence.isSolved = true;
+				}, 1000);
+			}
+		}
 	});
 </script>
 
 <div class="flex h-fit w-full flex-col items-center justify-center font-sans">
-	{#if isCorrect}
+	{#if showConfetti}
 		<h2 class="font-feather text-2xl font-bold">
 			Opgave {sentence.id + 1}/{sentence.totalAmountsOfIdsInSet} løst
 		</h2>
 		<div use:confetti={{ particleCount: 100, force: 0.1 }}></div>
 	{:else}
-		{#if checkSentence}
-			<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">Ret din Sætning</h2>
-		{:else}
-			<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">
-				Indsæt manglende kommaer
-			</h2>
-		{/if}
-		<textarea
-			class="flex h-32 w-full max-w-2xl resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42] text-xl"
-			bind:value={userInputSentence}
-			oninput={() => {
-				userInputSentence.replace(/,/g, '') == lastInput.replace(/,/g, '')
-					? (lastInput = userInputSentence)
-					: (userInputSentence = lastInput);
+		<h2 class="mb-3 w-full max-w-2xl text-left font-feather text-2xl">Indsæt manglende kommaer</h2>
+		<!-- svelte-ignore event_directive_deprecated -->
+		<form
+			action="?/checkSentence"
+			class="w-full max-w-2xl"
+			method="post"
+			use:enhance={() => {
+				return async ({ update, formData }) => {
+					await update();
+				};
 			}}
-		></textarea>
-		{#if checkSentence}
-			<p class={amountOfMissingCommas != 0 ? 'text-red-400' : 'text-teal-400'}>
-				Der mangler {amountOfMissingCommas} kommaer
-			</p>
-			<p class={amountOfWrongCommas != 0 ? 'text-red-400' : 'text-teal-400'}>
-				Der er {amountOfWrongCommas} forkerte kommaer
-			</p>
-			{@html feedbackHtml}
-		{:else if user.lifes > 0}
-			<!-- content here -->
-			<div class="mt-10 flex w-full max-w-2xl flex-row justify-between font-feather">
-				<form
-					action="?/deductLife"
-					method="post"
-					use:enhance={() => {
-						return ({ update }) => {
-							checkSentence = true;
-							update();
-						};
-					}}
+		>
+			<textarea
+				name="userInputSentence"
+				id="userInputSentence"
+				class="h-32 w-full resize-none rounded-xl border-2 border-teal-300 bg-[#2e3a42] text-xl"
+				bind:value={userInputSentence}
+				oninput={() => {
+					userInputSentence.replace(/,/g, '') == lastInput.replace(/,/g, '')
+						? (lastInput = userInputSentence)
+						: (userInputSentence = lastInput);
+				}}
+			></textarea>
+			<input type="hidden" name="sentenceId" value={sentence.id} />
+			<input type="hidden" name="gameId" value={gameId} />
+			<input type="hidden" name="originalSentence" value={originalSentence} />
+			<div class="mt-4 flex justify-end">
+				<button
+					type="submit"
+					class="rounded-xl border-2 border-teal-400 bg-[#222b33] p-3 text-white transition-all duration-100 hover:bg-teal-400 hover:text-black"
 				>
-					<button
-						type="submit"
-						class="rounded-xl bg-[#11161a] p-3 text-white opacity-40 transition-all duration-100 hover:opacity-70"
-					>
-						Vis Svar
-					</button>
-				</form>
+					{#if form}
+						Tjek Sætning / Næste
+					{:else}
+						Tjek Sætning
+					{/if}
+				</button>
 			</div>
-		{:else}
-			<p class="text-red-400">Du har ikke flere liv</p>
+		</form>
+		{#if form}
+			{#if form.amountOfMissingCommas !== 0 || form.amountOfWrongCommas !== 0}
+				<!-- content here -->
+				{#if user.lifes > 0}
+					<!-- content here -->
+					<div class="mt-4 w-full max-w-2xl">
+						<p>Ikke rigtigt</p>
+						<p class={form.amountOfMissingCommas !== 0 ? 'text-red-400' : 'text-teal-400'}>
+							Der mangler {form.amountOfMissingCommas} kommaer
+						</p>
+						<p class={form.amountOfWrongCommas !== 0 ? 'text-red-400' : 'text-teal-400'}>
+							Der er {form.amountOfWrongCommas} forkerte kommaer
+						</p>
+						{@html form.feedbackHtml}
+					</div>
+				{:else}
+					<!-- else content here -->
+					<div class="mt-4 w-full max-w-2xl">
+						<p>Ikke rigtigt</p>
+						<p>
+							Du har ikke flere liv tilbage, så du kan ikke se din feedback, men du kan prøve igen
+						</p>
+					</div>
+				{/if}
+			{/if}
 		{/if}
 	{/if}
 </div>

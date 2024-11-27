@@ -1,11 +1,15 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { Actions } from './/$types';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, and } from 'drizzle-orm';
+import { v4 as uuidv4 } from 'uuid';
+import { getSentence } from '$lib/utils';
+import { json } from '@sveltejs/kit';
 
 export const load = (async (event) => {
+	console.log('game load');
 	if (!event.locals.user) {
 		return redirect(302, '/auth/login');
 	}
@@ -16,7 +20,34 @@ export const load = (async (event) => {
 		return redirect(302, '/auth/login');
 	}
 
-	return { user };
+	const gameId = uuidv4();
+
+	const AMOUNT = 5;
+	const originalSentences = [];
+	const sentencesWithoutCommas = [];
+
+	for (let i = 0; i < AMOUNT; i++) {
+		const sentence = getSentence();
+		originalSentences.push({ id: i, text: sentence });
+		const sentenceWithoutCommas = sentence.replace(/,/g, '');
+		sentencesWithoutCommas.push({
+			id: i,
+			text: sentenceWithoutCommas
+		});
+	}
+
+	// Store the original sentences in the database
+	await db.insert(table.games).values({
+		id: gameId,
+		userId: event.locals.user.id,
+		sentences: JSON.stringify(originalSentences)
+	});
+
+	return {
+		user,
+		gameId,
+		sentences: sentencesWithoutCommas
+	};
 }) satisfies PageServerLoad;
 
 export const actions = {
@@ -24,6 +55,24 @@ export const actions = {
 		// check if user is logged in
 		if (!event.locals.user) {
 			return redirect(302, '/auth');
+		}
+
+		const formData = await event.request.formData();
+		const gameId = formData.get('gameId') as string;
+
+		// check if the game ID is already completed
+		const [completedGame] = await db
+			.select()
+			.from(table.completedGames)
+			.where(
+				and(
+					eq(table.completedGames.userId, event.locals.user.id),
+					eq(table.completedGames.gameId, gameId)
+				)
+			);
+
+		if (completedGame) {
+			return redirect(302, '/game');
 		}
 
 		//get the user lives
@@ -86,6 +135,9 @@ export const actions = {
 			.set({ activityHistory: JSON.stringify(activityHistory) })
 			.where(eq(table.user.id, event.locals.user.id));
 
+		// mark the game as completed
+		await db.insert(table.completedGames).values({ userId: event.locals.user.id, gameId });
+
 		//redirect to game
 		return redirect(302, '/game');
 	},
@@ -129,5 +181,100 @@ export const actions = {
 
 		//redirect to game
 		return redirect(302, '/game');
+	},
+	checkSentence: async (event) => {
+		// Check if the user is logged in
+		if (!event.locals.user) {
+			return redirect(302, '/auth');
+		}
+
+		const formData = await event.request.formData();
+		const gameId = formData.get('gameId') as string;
+		const sentenceId = Number(parseInt(formData.get('sentenceId') as string));
+		const userInputSentence = formData.get('userInputSentence') as string;
+
+		// Retrieve the original sentences from the database
+		const [game] = await db
+			.select()
+			.from(table.games)
+			.where(and(eq(table.games.id, gameId), eq(table.games.userId, event.locals.user.id)));
+
+		if (!game) {
+			return redirect(302, '/game');
+		}
+
+		const originalSentences: { id: number; text: string }[] = JSON.parse(game.sentences);
+		const originalSentenceObj = originalSentences.find((s) => s.id === sentenceId);
+
+		if (!originalSentenceObj) {
+			return redirect(302, '/game');
+		}
+
+		const originalSentence = originalSentenceObj.text;
+
+		// Perform validation
+		const amountOfMissingCommas = [...originalSentence.matchAll(/,/g)].filter(
+			(match) => userInputSentence[match.index!] !== ','
+		).length;
+
+		const amountOfWrongCommas = [...userInputSentence.matchAll(/,/g)]
+			.map((match) => match.index!)
+			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0);
+
+		const isCorrect = amountOfMissingCommas === 0 && amountOfWrongCommas === 0;
+
+		//print the validation result
+		console.log(isCorrect, amountOfMissingCommas, amountOfWrongCommas);
+
+		//if not correct deduct a life
+		if (!isCorrect) {
+			await db
+				.update(table.user)
+				.set({
+					lifes: sql`${table.user.lifes} - 1`
+				})
+				.where(eq(table.user.id, event.locals.user.id));
+
+			//if the user has no lifes left l < 0 set the lifes to 0
+			await db
+				.update(table.user)
+				.set({
+					lifes: 0
+				})
+				.where(sql`${table.user.lifes} < 0`);
+		}
+
+		// Return the validation result
+		return {
+			isCorrect,
+			sentenceId,
+			amountOfMissingCommas,
+			amountOfWrongCommas,
+			feedbackHtml: feedbackHtml(originalSentence, userInputSentence),
+			previousInput: userInputSentence
+		};
 	}
 } satisfies Actions;
+
+const feedbackHtml = (originalSentence: string, userInputSentence: string) => {
+	const createCommaSpan = (color: string) =>
+		`<span style="background-color: ${color}; padding: 1px 3px; border-radius: 9999px; margin: 0px 1px;">,</span>`;
+
+	const wordGT = originalSentence.split(' ');
+	const wordUI = userInputSentence.split(' ');
+
+	const html = wordGT
+		.map((gtWord, i) => {
+			const uiWord = wordUI[i] || '';
+			if (gtWord.includes(',') && uiWord.includes(',')) {
+				return gtWord.replace(',', '') + createCommaSpan('#2dd4bf');
+			} else if (gtWord.includes(',') && !uiWord.includes(',')) {
+				return gtWord.replace(',', '') + createCommaSpan('#ef4444');
+			} else {
+				return gtWord;
+			}
+		})
+		.join(' ');
+
+	return `<p>${html}</p>`;
+};

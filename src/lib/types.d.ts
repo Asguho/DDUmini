@@ -1,6 +1,6 @@
 export type Sentence = {
 	id: number;
-  totalAmountsOfIdsInSet: number;
+	totalAmountsOfIdsInSet: number;
 	text: string;
 	isSolved: boolean;
 };

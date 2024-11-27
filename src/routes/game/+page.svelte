@@ -7,27 +7,33 @@
 	import { ArrowBigLeft, Heart } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
 
-	import type { PageServerData } from './$types';
-	import { goto } from '$app/navigation';
-	let { data }: { data: PageServerData } = $props();
+	import type { PageData, ActionData } from './$types';
 
-	let sentencesToSolve: Sentence[] = $state([]);
-	const AMOUNT = 5;
-	newSentences();
+	import { goto, invalidateAll } from '$app/navigation';
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 
-	function newSentences() {
-		sentencesToSolve = [];
-		for (let i = 0; i < AMOUNT; i++) {
-			sentencesToSolve.push({
-				id: i,
-				text: getSentence(),
-				isSolved: false,
-				totalAmountsOfIdsInSet: AMOUNT
-			});
-		}
-	}
+	console.log(data);
+
+	let gameId = data.gameId;
+
+	let sentencesToSolve: Sentence[] = $state(
+		data.sentences.map((sentence) => ({
+			id: sentence.id,
+			text: sentence.text,
+			isSolved: false,
+			totalAmountsOfIdsInSet: data.sentences.length
+		}))
+	);
 
 	let allSentencesSolved = $derived(sentencesToSolve.every((sentence) => sentence.isSolved));
+
+	function returnFormForIndex(index: number) {
+		if (form && form.sentenceId === index) {
+			return form;
+		} else {
+			return null;
+		}
+	}
 </script>
 
 <header class=" absolute flex w-full flex-col items-center px-3 py-4">
@@ -58,9 +64,10 @@
 	{#if data.user.showTutorial}
 		<div class="max-w-2xl rounded-2xl border-2 border-white p-3">
 			Tutorial: Indtast de manglende kommaer i sætningen herunder. Når alle kommaerne er korrekte,
-			er opgaven løst, og du vil automatisk gå videre til næste opgave. Når alle opgaver er løst,
-			vil du modtage XP baseret på, hvor mange liv du har tilbage, samt 3 nye liv. Du mister liv ved
-			at trykke på "Vis svar"-knappen.
+			er opgaven løst. bemærk at du IKKE vil blive automatisk viresendt, tryk på tjek svar knappen!!
+			Når alle opgaver er løst, vil du modtage XP baseret på, hvor mange liv du har tilbage, samt 3
+			nye liv. Du mister liv ved at svare forkert. Du kan altid se dine liv og XP i øverste højre
+			hjørne. (27/11/2024) - Vi har lavet anti-cheat systemer, så derfor ser du denne besked igen.
 			<form
 				action="?/disableTutorial"
 				method="post"
@@ -91,7 +98,12 @@
 					in:fade
 					out:fade={{ delay: 1000, duration: 500 }}
 				>
-					<SentenceRenderer {sentence} user={data.user} />
+					<SentenceRenderer
+						{sentence}
+						user={data.user}
+						{gameId}
+						form={returnFormForIndex(sentence.id)}
+					/>
 				</div>
 			{/each}
 		{:else}
@@ -103,11 +115,12 @@
 						method="post"
 						use:enhance={() => {
 							return async ({ update }) => {
-								newSentences();
-								update();
+								await update();
+								goto('/newGame');
 							};
 						}}
 					>
+						<input type="hidden" name="gameId" value={gameId} />
 						<button
 							type="submit"
 							class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
@@ -125,6 +138,7 @@
 							};
 						}}
 					>
+						<input type="hidden" name="gameId" value={gameId} />
 						<button
 							type="submit"
 							class="rounded-xl border-2 border-teal-900 bg-teal-200 p-4 font-feather text-2xl text-black"
