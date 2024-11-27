@@ -85,7 +85,7 @@
 	</section>
 	<section>
 		<div class=" mt-8 rounded-3xl border-4 border-gray-600 p-8">
-			<Leaderboard users={data.users}></Leaderboard>
+			<Leaderboard users={data.users} max="10"></Leaderboard>
 		</div>
 	</section>
 </main>

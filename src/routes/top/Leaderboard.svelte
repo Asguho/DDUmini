@@ -2,7 +2,7 @@
 	import type { User } from '$lib/server/db/schema';
 	import { CircleUser, Trophy } from 'lucide-svelte';
 
-	let { users } = $props();
+	let { users, max } = $props();
 
 	function leaderboardColorer(rank: number) {
 		if (rank === 1) return 'bg-yellow-400/30';
@@ -12,7 +12,9 @@
 	}
 </script>
 
-<h1 class="text-center font-feather text-2xl text-teal-400">Current Top 10</h1>
+<h1 class="text-center font-feather text-2xl text-teal-400">
+	Current Top {max > 100 ? '' : max} Users
+</h1>
 <p class="text-center text-lg font-bold">
 	Nr. 1 på leaderboardet d. 29/11-2024 kl. 12:10 vil modtage en øl på vores regning (eller en is)
 	🍺🍦
@@ -28,7 +30,7 @@
 	</thead>
 	<tbody>
 		{#each users as user, index}
-			{#if index < 10}
+			{#if index < max}
 				<tr class={'text-center ' + leaderboardColorer(index + 1)}>
 					<td class="border-b px-4 py-2">
 						{#if user.pfpB64}
