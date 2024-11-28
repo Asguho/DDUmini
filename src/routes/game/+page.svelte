@@ -25,6 +25,15 @@
 		}))
 	);
 
+	let userinputedSentences: Sentence[] = sentencesToSolve.map((sentence) => ({
+		id: sentence.id,
+		text: '',
+		isSolved: false,
+		totalAmountsOfIdsInSet: data.sentences.length
+	}));
+
+	let JSONSentences = $derived(JSON.stringify(userinputedSentences));
+
 	let newButtonElement: any;
 	let finishedButtonElement: any;
 
@@ -103,6 +112,7 @@
 				>
 					<SentenceRenderer
 						{sentence}
+						{userinputedSentences}
 						user={data.user}
 						{gameId}
 						form={returnFormForIndex(sentence.id)}
@@ -125,6 +135,9 @@
 						}}
 					>
 						<input type="hidden" name="gameId" value={gameId} />
+						{#key JSONSentences}
+							<input type="hidden" name="sentences" value={JSONSentences} />
+						{/key}
 						<button
 							type="submit"
 							bind:this={finishedButtonElement}
@@ -145,6 +158,9 @@
 						}}
 					>
 						<input type="hidden" name="gameId" value={gameId} />
+						{#key JSONSentences}
+							<input type="hidden" name="sentences" value={JSONSentences} />
+						{/key}
 						<button
 							type="submit"
 							bind:this={newButtonElement}

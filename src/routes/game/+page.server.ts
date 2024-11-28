@@ -7,9 +7,9 @@ import { eq, sql, and } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { getSentence } from '$lib/utils';
 import { json } from '@sveltejs/kit';
+import type { Sentence } from '$lib/types';
 
 export const load = (async (event) => {
-	console.log('game load');
 	if (!event.locals.user) {
 		return redirect(302, '/auth/login');
 	}
@@ -59,6 +59,7 @@ export const actions = {
 
 		const formData = await event.request.formData();
 		const gameId = formData.get('gameId') as string;
+		const sentences: Sentence[] = JSON.parse(formData.get('sentences') as string);
 
 		// check if the game ID is already completed
 		const [completedGame] = await db
@@ -72,6 +73,47 @@ export const actions = {
 			);
 
 		if (completedGame) {
+			return redirect(302, '/game');
+		}
+
+		//get the games original sentences
+		const [game] = await db
+			.select()
+			.from(table.games)
+			.where(and(eq(table.games.id, gameId), eq(table.games.userId, event.locals.user.id)));
+
+		//verify that the game exists
+		if (!game) {
+			return redirect(302, '/game');
+		}
+
+		const originalSentences: { id: number; text: string }[] = JSON.parse(game.sentences);
+
+		//check if the user has completed the game by verifying that all sentences are correctly punctuated
+		const isGameCompleted = sentences.every((sentence) => {
+			const originalSentence = originalSentences.find((s) => s.id === sentence.id);
+			if (!originalSentence) {
+				return false;
+			}
+
+			//if amount of missing commas is 0 and amount of wrong commas is 0 the sentence is correct
+			const amountOfMissingCommas = [...originalSentence.text.matchAll(/,/g)].filter(
+				(match) => sentence.text[match.index!] !== ','
+			).length;
+
+			const amountOfWrongCommas = [...sentence.text.matchAll(/,/g)]
+				.map((match) => match.index!)
+				.reduce((count, index) => (originalSentence.text[index] !== ',' ? count + 1 : count), 0);
+
+			return amountOfMissingCommas === 0 && amountOfWrongCommas === 0;
+		});
+
+		console.log(isGameCompleted);
+		console.log(sentences);
+		console.log(originalSentences);
+
+		//if the game is not completed redirect to game
+		if (!isGameCompleted) {
 			return redirect(302, '/game');
 		}
 
@@ -222,9 +264,6 @@ export const actions = {
 			.reduce((count, index) => (originalSentence[index] !== ',' ? count + 1 : count), 0);
 
 		const isCorrect = amountOfMissingCommas === 0 && amountOfWrongCommas === 0;
-
-		//print the validation result
-		console.log(isCorrect, amountOfMissingCommas, amountOfWrongCommas);
 
 		//if not correct deduct a life
 		if (!isCorrect) {

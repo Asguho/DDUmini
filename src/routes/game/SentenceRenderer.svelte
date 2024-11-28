@@ -10,8 +10,15 @@
 		sentence,
 		user,
 		gameId,
-		form
-	}: { sentence: Sentence; user: User; gameId: string; form: ActionData } = $props();
+		form,
+		userinputedSentences
+	}: {
+		sentence: Sentence;
+		user: User;
+		gameId: string;
+		form: ActionData;
+		userinputedSentences: Sentence[];
+	} = $props();
 
 	import { enhance } from '$app/forms';
 	import type { User } from '$lib/server/db/schema';
@@ -31,6 +38,15 @@
 			if (form.isCorrect) {
 				console.log('isCorrect');
 				showConfetti = true;
+
+				//se the userinputedSentences to the new value at the correct index
+				userinputedSentences[sentence.id] = {
+					id: sentence.id,
+					text: form.previousInput,
+					isSolved: true,
+					totalAmountsOfIdsInSet: userinputedSentences.length
+				};
+
 				//wait for 2 seconds
 				setTimeout(() => {
 					sentence.isSolved = true;
