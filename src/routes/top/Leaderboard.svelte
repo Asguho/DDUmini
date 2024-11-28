@@ -15,10 +15,6 @@
 <h1 class="text-center font-feather text-2xl text-teal-400">
 	Current Top {max > 100 ? '' : max} Users
 </h1>
-<p class="text-center text-lg font-bold">
-	Nr. 1 på leaderboardet d. 29/11-2024 kl. 12:10 vil modtage en øl på vores regning (eller en is)
-	🍺🍦
-</p>
 <table class="mt-4 min-w-full border-t-2">
 	<thead>
 		<tr>
