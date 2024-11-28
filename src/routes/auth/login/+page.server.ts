@@ -58,6 +58,9 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const password = formData.get('password');
 
+		//disable registration
+		return fail(400, { message: 'Registration is disabled' });
+
 		if (!validateUsername(username)) {
 			return fail(400, {
 				message: 'Invalid username, (only lowercase letters, numbers, hyphens, and underscores)'
@@ -67,7 +70,7 @@ export const actions: Actions = {
 			return fail(400, { message: 'Invalid password, (min 6 characters)' });
 		}
 
-		const userId = generateUserId();
+		/* const userId = generateUserId();
 		const passwordHash = await hash(password, HASH_OPTIONS);
 
 		try {
@@ -80,7 +83,7 @@ export const actions: Actions = {
 			console.error(e);
 			return fail(500, { message: 'An error has occurred' });
 		}
-		return redirect(302, '/');
+		return redirect(302, '/'); */
 	}
 };
 
